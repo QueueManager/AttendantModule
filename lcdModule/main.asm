@@ -88,51 +88,89 @@ lcdInit:
       ;Control bits already cleared at setup
       ;BCF	rs	; ControlMode=0, DataMode=1
       ;BCF	en	; Wait config=0, SendConfig=1
-      MOVLW	H'33'
+      MOVLW	H'33'	; Init command
       MOVWF	PORTC
       CALL	writeCmd
-      MOVLW	H'32'
+      MOVLW	H'32'	; Init command
       MOVWF	PORTC
       CALL	writeCmd
-      MOVLW	H'28'
+      MOVLW	H'28'	; 4 bit mode
       MOVWF	PORTC
       CALL	writeCmd
-      MOVLW	H'0F'
+      MOVLW	H'0F'	; Display blinking on cursor
       MOVWF	PORTC
       CALL	writeCmd
       RETURN
 
 message:
-      MOVLW	'B'
+      MOVLW	'A'
+      CALL	writeData
+      MOVLW	't'
+      CALL	writeData
+      MOVLW	't'
       CALL	writeData
       MOVLW	'e'
       CALL	writeData
-      MOVLW	'c'
+      MOVLW	'n'
+      CALL	writeData
+      MOVLW	'd'
       CALL	writeData
       MOVLW	'a'
+      CALL	writeData
+      MOVLW	'n'
+      CALL	writeData
+      MOVLW	't'
       CALL	writeData
       MOVLW	' '
       CALL	writeData
-      MOVLW	'p'
+      MOVLW	'M'
       CALL	writeData
       MOVLW	'o'
       CALL	writeData
-      MOVLW	's'
+      MOVLW	'd'
       CALL	writeData
-      MOVLW	's'
+      MOVLW	'u'
+      CALL	writeData
+      MOVLW	'l'
       CALL	writeData
       MOVLW	'e'
       CALL	writeData
-      MOVLW	's'
-      CALL	writeData
-      MOVLW	's'
+      MOVLW	H'C0'
+      CALL	writeCmd
+      MOVLW	'M'
       CALL	writeData
       MOVLW	'i'
-      CALL	writeData      
-      MOVLW	'v'
+      CALL	writeData
+      MOVLW	'c'
+      CALL	writeData
+      MOVLW	'r'
+      CALL	writeData
+      MOVLW	'o'
+      CALL	writeData
+      MOVLW	'c'
+      CALL	writeData
+      MOVLW	'o'
+      CALL	writeData
+      MOVLW	'n'
+      CALL	writeData
+      MOVLW	't'
       CALL	writeData  
-      MOVLW	'a'
-      CALL	writeData   
+      MOVLW	'r'
+      CALL	writeData  
+      MOVLW	'o'
+      CALL	writeData
+      MOVLW	'l'
+      CALL	writeData
+      MOVLW	'l'
+      CALL	writeData
+      MOVLW	'e'
+      CALL	writeData  
+      MOVLW	'r'
+      CALL	writeData  
+      MOVLW	's'
+      CALL	writeData
+      MOVLW	'!'
+      CALL	writeData  
       RETURN
       
 
@@ -175,7 +213,7 @@ getNibble:
       RETURN
       
 delay:
-      MOVLW	D'4'
+      MOVLW	D'8'
       MOVWF	x
 counterTwo:
       MOVLW	D'255'
