@@ -10,30 +10,25 @@
 ; DEFINITIONS
 ;====================================================================
 
-#include p16f688.inc                ; Include register definition file
-; CONFIG
-; __config 0xFFD4
- __CONFIG _FOSC_INTOSCIO & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_ON & _FCMEN_ON
+#include p16f688.inc                ; Include register definition file;; __config 0xFFD4
+#include "C:\Users\Bruno\git\Attendant\lcdModule\lcdModule.inc"
 
+ __CONFIG _FOSC_INTOSCIO & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_ON & _FCMEN_ON
 ;====================================================================
 ; VARIABLES
 ;====================================================================
-   x	EQU	0x21
-   y	EQU	0x22
-   hi	EQU	0x23
-   lo	EQU	0x24
-   
-   #define	lcdPort	PORTC
-   #define	rs	PORTA, 0
-   #define	en	PORTA, 1
-   ; RW is grounded
-   ; D4 ----> RC0
-   ; D5 ----> RC1
-   ; D6 ----> RC2
-   ; D7 ----> RC3
+; Definitions for LCD controls
+lcdVar	 UDATA	0x20
+x	 RES	1
+y	 RES	1
+hi	 RES	1
+lo	 RES	1
 
-
-   
+lcdPrt	 UDATA	0x05	
+ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
+dataPort RES	1	; PORTC=0x06
+	 GLOBAL x, y, hi, lo, dataPort, ctrlPort
+      
 ;====================================================================
 ; RESET and INTERRUPT VECTORS
 ;====================================================================     
@@ -47,202 +42,90 @@
 ;====================================================================
 ; CODE SEGMENT
 ;====================================================================
-setup:
+setup:  
       ; PIC pre configurations
       BANKSEL	CMCON0
       MOVLW	0x07
       MOVWF	CMCON0
       BANKSEL	ANSEL
       CLRF	ANSEL
-      CLRF	TRISC
       CLRF	TRISA
+      MOVLW	B'110000'
+      MOVWF	TRISC
       
       BANKSEL	PORTC
       CLRF	PORTC	; Data purposes
-      CLRF	PORTA	; Control purposes
-      CALL	lcdInit
+      CLRF	PORTA	; Control purposes    
+      lcdInit		; Send init sequence
       
 ;====================================================================
 ; MAIN LOOP
-;====================================================================
+;==================================================================== 
 loop:
       CALL	message
       GOTO	loop
-
+      
 ;====================================================================
 ; CONTROL AND DATA FUNCTIONS
 ;====================================================================      
-; Init sequence must be:
-; RC0 1 2 3 - Registers from PORTC
-;  D4 5 6 7 - Pins from LM016L
-;   0 0 1 1
-;   0 0 1 1
-;   0 0 1 1
-;   0 0 1 0 ; End of init sequence
-;   0 0 1 0
-;   1 0 0 0 ; End of 4 bit sequence
-;   0 0 0 0
-;   1 1 1 1 ; End of blinking cursor sequence
-lcdInit:
-      BANKSEL	PORTA
-      ;Control bits already cleared at setup
-      ;BCF	rs	; ControlMode=0, DataMode=1
-      ;BCF	en	; Wait config=0, SendConfig=1
-      MOVLW	H'33'	; Init command
-      MOVWF	PORTC
-      CALL	writeCmd
-      MOVLW	H'32'	; Init command
-      MOVWF	PORTC
-      CALL	writeCmd
-      MOVLW	H'28'	; 4 bit mode
-      MOVWF	PORTC
-      CALL	writeCmd
-      MOVLW	H'0F'	; Display blinking on cursor
-      MOVWF	PORTC
-      CALL	writeCmd
-      RETURN
-
 message:
-      MOVLW	H'01'		; Clear screen
-      CALL	writeCmd
-      MOVLW	H'80'		; First line command
-      CALL	writeCmd
-      MOVLW	'A'
-      CALL	writeData
-      MOVLW	't'
-      CALL	writeData
-      MOVLW	't'
-      CALL	writeData
-      MOVLW	'e'
-      CALL	writeData
-      MOVLW	'n'
-      CALL	writeData
-      MOVLW	'd'
-      CALL	writeData
-      MOVLW	'a'
-      CALL	writeData
-      MOVLW	'n'
-      CALL	writeData
-      MOVLW	't'
-      CALL	writeData
-      MOVLW	' '
-      CALL	writeData
-      MOVLW	'M'
-      CALL	writeData
-      MOVLW	'o'
-      CALL	writeData
-      MOVLW	'd'
-      CALL	writeData
-      MOVLW	'u'
-      CALL	writeData
-      MOVLW	'l'
-      CALL	writeData
-      MOVLW	'e'
-      CALL	writeData
-      MOVLW	H'C0'		; Second line command
-      CALL	writeCmd	
-      CALL	lDelay		; Wait a little
-      MOVLW	'M'
-      CALL	writeData
-      MOVLW	'i'
-      CALL	writeData
-      MOVLW	'c'
-      CALL	writeData
-      MOVLW	'r'
-      CALL	writeData
-      MOVLW	'o'
-      CALL	writeData
-      MOVLW	'c'
-      CALL	writeData
-      MOVLW	'o'
-      CALL	writeData
-      MOVLW	'n'
-      CALL	writeData
-      MOVLW	't'
-      CALL	writeData  
-      MOVLW	'r'
-      CALL	writeData  
-      MOVLW	'o'
-      CALL	writeData
-      MOVLW	'l'
-      CALL	writeData
-      MOVLW	'l'
-      CALL	writeData
-      MOVLW	'e'
-      CALL	writeData  
-      MOVLW	'r'
-      CALL	writeData  
-      MOVLW	's'
-      CALL	writeData
-      MOVLW	'!'
-      CALL	writeData  
-      CALL	lDelay
-      RETURN
-      
-
-runCmd:
-      BSF	en	; E=1 (Connect to module), E=0(Disconnect)	
-      CALL	delay
-      BCF	en	; E=0
-      CALL	delay
+      writeCmd	H'01'		; Clear screen
+      writeCmd	H'80'		; First line command
+      writeData	'A'
+      writeData	't'
+      writeData	't'
+      writeData	'e'
+      writeData	'n'
+      writeData	'd'
+      writeData	'a'
+      writeData	'n'
+      writeData	't'
+      writeData	' '
+      writeData	'M'
+      writeData	'o'
+      writeData	'd'
+      writeData	'u'
+      writeData	'l'
+      writeData	'e'
+      writeCmd	H'C0'		; Second line command	
+      CALL	delay			; Wait a little
+      writeData	'M'
+      writeData	'i'
+      writeData	'c'
+      writeData	'r'
+      writeData	'o'
+      writeData	'c'
+      writeData	'o'
+      writeData	'n'
+      writeData	't'
+      writeData	'r'
+      writeData	'o'
+      writeData	'l'
+      writeData	'l'
+      writeData	'e'
+      writeData	'r'
+      writeData	's'
+      writeData	'!'
       CALL	delay
       RETURN
-      
-writeData:
-      CALL	getNibble
-      MOVF	lo, W
-      MOVWF	PORTC
-      BSF	rs
-      CALL	runCmd
-      
-      MOVF	hi, W
-      MOVWF	PORTC      
-      CALL	runCmd
-      RETURN
-      
-writeCmd:
-      CALL	getNibble
-      MOVF	lo, W
-      MOVWF	PORTC
-      BCF	rs
-      CALL	runCmd
-      
-      MOVF	hi, W
-      MOVWF	PORTC      
-      CALL	runCmd
-      RETURN
-      
-getNibble:
-      MOVWF	lo
-      MOVWF	hi
-      SWAPF	lo, 1
-      RETURN
-      
+ 
+; ========================================
+; Delay function. Minimum time between two 
+; consecutive commands. 'X' and 'Y' are
+; used as indexes in FOR loops.
+; ========================================
 delay:
       MOVLW	D'1'
       MOVWF	x
-counterTwo:
-      MOVLW	D'31'
-      MOVWF	y
-counterOne:
-      DECFSZ	y, 1
-      GOTO	counterOne
-      DECFSZ	x, 1
-      GOTO	counterTwo 
-      RETURN
 
-lDelay:
-      MOVLW	D'16'
-      MOVWF	x
-lCounterTwo:
-      MOVLW	D'128'
+      MOVLW	D'31'	; outter for loop
       MOVWF	y
-lCounterOne:
-      DECFSZ	y, 1
-      GOTO	lCounterOne
-      DECFSZ	x, 1
-      GOTO	lCounterTwo 
-      RETURN
 
+      DECFSZ	y, 1	; inner for loop
+      GOTO	$-1
+      DECFSZ	x, 1
+      GOTO	$-5
+      RETURN 
+      
 ;====================================================================
    END
