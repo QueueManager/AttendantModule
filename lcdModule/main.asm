@@ -65,8 +65,8 @@ setup:
 ;====================================================================
 ; MAIN LOOP
 ;====================================================================
-CALL	message
 loop:
+      CALL	message
       GOTO	loop
 
 ;====================================================================
@@ -103,6 +103,10 @@ lcdInit:
       RETURN
 
 message:
+      MOVLW	H'01'		; Clear screen
+      CALL	writeCmd
+      MOVLW	H'80'		; First line command
+      CALL	writeCmd
       MOVLW	'A'
       CALL	writeData
       MOVLW	't'
@@ -135,8 +139,9 @@ message:
       CALL	writeData
       MOVLW	'e'
       CALL	writeData
-      MOVLW	H'C0'
-      CALL	writeCmd
+      MOVLW	H'C0'		; Second line command
+      CALL	writeCmd	
+      CALL	lDelay		; Wait a little
       MOVLW	'M'
       CALL	writeData
       MOVLW	'i'
@@ -171,6 +176,7 @@ message:
       CALL	writeData
       MOVLW	'!'
       CALL	writeData  
+      CALL	lDelay
       RETURN
       
 
@@ -205,7 +211,7 @@ writeCmd:
       MOVWF	PORTC      
       CALL	runCmd
       RETURN
-
+      
 getNibble:
       MOVWF	lo
       MOVWF	hi
@@ -213,16 +219,29 @@ getNibble:
       RETURN
       
 delay:
-      MOVLW	D'8'
+      MOVLW	D'1'
       MOVWF	x
 counterTwo:
-      MOVLW	D'255'
+      MOVLW	D'31'
       MOVWF	y
 counterOne:
       DECFSZ	y, 1
       GOTO	counterOne
       DECFSZ	x, 1
       GOTO	counterTwo 
+      RETURN
+
+lDelay:
+      MOVLW	D'16'
+      MOVWF	x
+lCounterTwo:
+      MOVLW	D'128'
+      MOVWF	y
+lCounterOne:
+      DECFSZ	y, 1
+      GOTO	lCounterOne
+      DECFSZ	x, 1
+      GOTO	lCounterTwo 
       RETURN
 
 ;====================================================================
