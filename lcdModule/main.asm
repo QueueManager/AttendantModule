@@ -73,7 +73,7 @@ loop:
 ; CONTROL AND DATA FUNCTIONS
 ;====================================================================      
 ; Init sequence must be:
-; RC3 2 1 0 - Registers from PORTC
+; RC0 1 2 3 - Registers from PORTC
 ;  D4 5 6 7 - Pins from LM016L
 ;   0 0 1 1
 ;   0 0 1 1
@@ -88,53 +88,51 @@ lcdInit:
       ;Control bits already cleared at setup
       ;BCF	rs	; ControlMode=0, DataMode=1
       ;BCF	en	; Wait config=0, SendConfig=1
-      MOVLW	B'0011'
+      MOVLW	H'33'
       MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'0011'
+      CALL	writeCmd
+      MOVLW	H'32'
       MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'0011'
+      CALL	writeCmd
+      MOVLW	H'28'
       MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'0010'
+      CALL	writeCmd
+      MOVLW	H'0F'
       MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'0010'
-      MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'1000'
-      MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'0000'
-      MOVWF	PORTC
-      CALL	runCmd
-      MOVLW	B'1111'
-      MOVWF	PORTC
-      CALL	runCmd
+      CALL	writeCmd
       RETURN
 
 message:
-      MOVLW	'A'
-      CALL	writeByte
-      MOVLW	'T'
-      CALL	writeByte
-      MOVLW	'T'
-      CALL	writeByte
-      MOVLW	'E'
-      CALL	writeByte
-      MOVLW	'N'
-      CALL	writeByte
-      MOVLW	'D'
-      CALL	writeByte
-      MOVLW	'A'
-      CALL	writeByte
-      MOVLW	'N'
-      CALL	writeByte
-      MOVLW	'T'
-      CALL	writeByte
-      MOVLW	'!'
-      CALL	writeByte
+      MOVLW	'B'
+      CALL	writeData
+      MOVLW	'e'
+      CALL	writeData
+      MOVLW	'c'
+      CALL	writeData
+      MOVLW	'a'
+      CALL	writeData
+      MOVLW	' '
+      CALL	writeData
+      MOVLW	'p'
+      CALL	writeData
+      MOVLW	'o'
+      CALL	writeData
+      MOVLW	's'
+      CALL	writeData
+      MOVLW	's'
+      CALL	writeData
+      MOVLW	'e'
+      CALL	writeData
+      MOVLW	's'
+      CALL	writeData
+      MOVLW	's'
+      CALL	writeData
+      MOVLW	'i'
+      CALL	writeData      
+      MOVLW	'v'
+      CALL	writeData  
+      MOVLW	'a'
+      CALL	writeData   
       RETURN
       
 
@@ -146,25 +144,38 @@ runCmd:
       CALL	delay
       RETURN
       
-send:
+writeData:
+      CALL	getNibble
+      MOVF	lo, W
+      MOVWF	PORTC
       BSF	rs
       CALL	runCmd
-      RETURN
-
-writeByte:
-      MOVWF	lo
-      MOVWF	hi
-      SWAPF	lo, W
-      MOVWF	PORTC
-      CALL	send
       
       MOVF	hi, W
       MOVWF	PORTC      
-      CALL	send
+      CALL	runCmd
+      RETURN
+      
+writeCmd:
+      CALL	getNibble
+      MOVF	lo, W
+      MOVWF	PORTC
+      BCF	rs
+      CALL	runCmd
+      
+      MOVF	hi, W
+      MOVWF	PORTC      
+      CALL	runCmd
+      RETURN
+
+getNibble:
+      MOVWF	lo
+      MOVWF	hi
+      SWAPF	lo, 1
       RETURN
       
 delay:
-      MOVLW	D'48'
+      MOVLW	D'4'
       MOVWF	x
 counterTwo:
       MOVLW	D'255'
