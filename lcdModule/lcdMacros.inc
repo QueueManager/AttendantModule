@@ -6,12 +6,12 @@ writeCmd MACRO	cmd
       MOVLW	cmd
       CALL	getNibble
       MOVF	lo, W
-      MOVWF	PORTC
-      BCF	ctrlPort, 0
+      MOVWF	dataPort
+      BCF	rs
       CALL	run
       
       MOVF	hi, W
-      MOVWF	PORTC      
+      MOVWF	dataPort      
       CALL	run
       ENDM
       
@@ -23,12 +23,12 @@ writeData MACRO byte
       MOVLW	byte
       CALL	getNibble
       MOVF	lo, W
-      MOVWF	PORTC
-      BSF	PORTA, 0
+      MOVWF	dataPort
+      BSF	rs
       CALL	run
       
       MOVF	hi, W
-      MOVWF	PORTC      
+      MOVWF	dataPort      
       CALL	run
       ENDM
       

@@ -7,7 +7,7 @@ delay:
       MOVLW	D'1'
       MOVWF	i
 
-      MOVLW	D'31'	; outter for loop
+      MOVLW	D'5'		; outter for loop
       MOVWF	j
 
       DECFSZ	j, 1	; inner for loop
@@ -21,7 +21,7 @@ delay:
 ; Sequence:  H'33'  H'32'  H'28'  H'0F'
 ; ==========================================
 lcdInit:
-      BANKSEL	PORTA
+      BANKSEL	ctrlPort
       ;Control bits already cleared at setup
       writeCmd	H'33'
       writeCmd	H'32'
@@ -44,9 +44,9 @@ getNibble:
 ; Can be used for both data and cmd purposes.
 ; ========================================
 run:
-      BSF	PORTA, 1	; E=1 (Connect to module), E=0(Disconnect)	
+      BSF	en		; E=1 (Connect to module), E=0(Disconnect)	
       CALL	delay
-      BCF	ctrlPort,1	; E=0
+      BCF	en		; E=0
       CALL	delay
       CALL	delay
       RETURN
@@ -74,7 +74,7 @@ message:
       writeData	'l'
       writeData	'e'
       writeCmd	H'C0'		; Second line command	
-      CALL	delay		; Wait a little
+      CALL	delay			; Wait a little
       writeData	'M'
       writeData	'i'
       writeData	'c'
@@ -94,3 +94,69 @@ message:
       writeData	'!'
       CALL	delay
       RETURN
+
+      
+; =========================================
+; Button1 was pressed.
+; =========================================  
+msgBtn1:
+      writeCmd	H'01'		; Clear screen
+      writeCmd	H'80'		; First line command
+      writeData	'B'
+      writeData	'u'
+      writeData	't'
+      writeData	't'
+      writeData	'o'
+      writeData	'n'
+      writeData	' '
+      writeData	'1'
+      writeData	' '
+      writeData	'w'
+      writeData	'a'
+      writeData	's'
+      writeCmd	H'C0'		; Second line command	
+      writeData	'P'
+      writeData	'r'
+      writeData	'e'
+      writeData	's'
+      writeData	's'
+      writeData	'e'
+      writeData	'd'
+      writeData	'.'
+      writeData	'.'
+      writeData	'.'
+      CALL	delay
+      RETURN
+
+; =========================================
+; Button2 was pressed.
+; =========================================  
+msgBtn2:
+      writeCmd	H'01'		; Clear screen
+      writeCmd	H'80'		; First line command
+      writeData	'B'
+      writeData	'u'
+      writeData	't'
+      writeData	't'
+      writeData	'o'
+      writeData	'n'
+      writeData	' '
+      writeData	'2'
+      writeData	' '
+      writeData	'w'
+      writeData	'a'
+      writeData	's'
+      writeCmd	H'C0'		; Second line command	
+      writeData	'P'
+      writeData	'r'
+      writeData	'e'
+      writeData	's'
+      writeData	's'
+      writeData	'e'
+      writeData	'd'
+      writeData	'.'
+      writeData	'.'
+      writeData	'.'
+      CALL	delay
+      RETURN
+
