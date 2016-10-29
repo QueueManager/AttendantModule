@@ -11,7 +11,7 @@
 ;====================================================================
 
 #include p16f688.inc                ; Include register definition file;; __config 0xFFD4
-#include "C:\Users\Bruno\git\Attendant\lcdModule\lcdModule.inc"
+#include "C:\Users\Bruno\git\Attendant\lcdModule\lcdMacros.inc"
 
  __CONFIG _FOSC_INTOSCIO & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_ON & _FCMEN_ON
 ;====================================================================
@@ -19,15 +19,15 @@
 ;====================================================================
 ; Definitions for LCD controls
 lcdVar	 UDATA	0x20
-x	 RES	1
-y	 RES	1
+i	 RES	1
+j	 RES	1
 hi	 RES	1
 lo	 RES	1
 
 lcdPrt	 UDATA	0x05	
 ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
 dataPort RES	1	; PORTC=0x06
-	 GLOBAL x, y, hi, lo, dataPort, ctrlPort
+	 GLOBAL i, j, hi, lo, dataPort, ctrlPort
       
 ;====================================================================
 ; RESET and INTERRUPT VECTORS
@@ -42,6 +42,8 @@ dataPort RES	1	; PORTC=0x06
 ;====================================================================
 ; CODE SEGMENT
 ;====================================================================
+#include "C:\Users\Bruno\git\Attendant\lcdModule\lcdFunctions.inc"
+
 setup:  
       ; PIC pre configurations
       BANKSEL	CMCON0
@@ -55,9 +57,10 @@ setup:
       
       BANKSEL	PORTC
       CLRF	PORTC	; Data purposes
-      CLRF	PORTA	; Control purposes    
-      lcdInit		; Send init sequence
-      
+      CLRF	PORTA	; Control purposes 
+      CALL      lcdInit		; Send init sequence
+      GOTO	loop
+         
 ;====================================================================
 ; MAIN LOOP
 ;==================================================================== 
@@ -65,67 +68,6 @@ loop:
       CALL	message
       GOTO	loop
       
-;====================================================================
-; CONTROL AND DATA FUNCTIONS
-;====================================================================      
-message:
-      writeCmd	H'01'		; Clear screen
-      writeCmd	H'80'		; First line command
-      writeData	'A'
-      writeData	't'
-      writeData	't'
-      writeData	'e'
-      writeData	'n'
-      writeData	'd'
-      writeData	'a'
-      writeData	'n'
-      writeData	't'
-      writeData	' '
-      writeData	'M'
-      writeData	'o'
-      writeData	'd'
-      writeData	'u'
-      writeData	'l'
-      writeData	'e'
-      writeCmd	H'C0'		; Second line command	
-      CALL	delay			; Wait a little
-      writeData	'M'
-      writeData	'i'
-      writeData	'c'
-      writeData	'r'
-      writeData	'o'
-      writeData	'c'
-      writeData	'o'
-      writeData	'n'
-      writeData	't'
-      writeData	'r'
-      writeData	'o'
-      writeData	'l'
-      writeData	'l'
-      writeData	'e'
-      writeData	'r'
-      writeData	's'
-      writeData	'!'
-      CALL	delay
-      RETURN
- 
-; ========================================
-; Delay function. Minimum time between two 
-; consecutive commands. 'X' and 'Y' are
-; used as indexes in FOR loops.
-; ========================================
-delay:
-      MOVLW	D'1'
-      MOVWF	x
-
-      MOVLW	D'31'	; outter for loop
-      MOVWF	y
-
-      DECFSZ	y, 1	; inner for loop
-      GOTO	$-1
-      DECFSZ	x, 1
-      GOTO	$-5
-      RETURN 
       
 ;====================================================================
    END
