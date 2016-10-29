@@ -2,3 +2,5 @@
 *build
 *debug
 *nbproject/private
+*.pdsbak
+*.workspace
