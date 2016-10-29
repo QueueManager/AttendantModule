@@ -19,10 +19,10 @@
 ;====================================================================
 ; Definitions for LCD controls
 lcdVar	 UDATA	0x20
-i	 RES	1
-j	 RES	1
-hi	 RES	1
-lo	 RES	1
+i	 RES	1		; Index for loop
+j	 RES	1		; Index for loop
+hi	 RES	1		; Most  significant nibble from data/command
+lo	 RES	1		; Least significant nibble from data/command
 
 lcdPrt	 UDATA	0x05	
 ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
@@ -35,7 +35,7 @@ dataPort RES	1	; PORTC=0x06
       ; Reset Vector
       ORG	0x0000
       GOTO	setup
-      
+      ; Interrupt Vector
       ORG	0x0004
       RETFIE
 
@@ -46,19 +46,20 @@ dataPort RES	1	; PORTC=0x06
 
 setup:  
       ; PIC pre configurations
-      BANKSEL	CMCON0
-      MOVLW	0x07
-      MOVWF	CMCON0
+      BANKSEL	CMCON0	 ; Bank 1
+      MOVLW		0x07
+      MOVWF		CMCON0	 ; Desativating comparators
       BANKSEL	ANSEL
-      CLRF	ANSEL
-      CLRF	TRISA
-      MOVLW	B'110000'
-      MOVWF	TRISC
+      CLRF		ANSEL	 ; Desativating analog i/o
+	  MOVLW		B'111000'; RA[0..2]=output, RA[3..5]=input
+      MOVWF		TRISA	 
+      MOVLW		B'110000'; RC[0..3]=output, RC[4..5]=input
+      MOVWF		TRISC
       
-      BANKSEL	PORTC
-      CLRF	PORTC	; Data purposes
-      CLRF	PORTA	; Control purposes 
-      CALL      lcdInit		; Send init sequence
+      BANKSEL	PORTC	; Bank 0
+      CLRF	PORTC		; Data purposes
+      CLRF	PORTA		; Control purposes 
+      CALL  lcdInit		; Send init sequence
       GOTO	loop
          
 ;====================================================================
@@ -67,7 +68,6 @@ setup:
 loop:
       CALL	message
       GOTO	loop
-      
-      
+    
 ;====================================================================
    END
