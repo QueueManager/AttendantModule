@@ -4,10 +4,10 @@
 ; used as indexes in FOR loops.
 ; ========================================
 delay:
-      MOVLW	D'1'
+      MOVLW	D'6'
       MOVWF	i
 
-      MOVLW	D'5'		; outter for loop
+      MOVLW	D'255'		; outter for loop
       MOVWF	j
 
       DECFSZ	j, 1	; inner for loop
