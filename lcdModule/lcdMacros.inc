@@ -16,11 +16,26 @@ writeCmd MACRO	cmd
       ENDM
       
 ; ========================================
-; Splite a byte into two nibbles and write
+; Split a byte into two nibbles and write
 ; it to LCD display
 ; ========================================
 writeData MACRO byte
       MOVLW	byte
+      CALL	getNibble
+      MOVF	lo, W
+      MOVWF	dataPort
+      BSF	rs
+      CALL	run
+      
+      MOVF	hi, W
+      MOVWF	dataPort      
+      CALL	run
+      ENDM
+
+; ========================================
+; Same as before. But, data is at W.
+; ========================================
+writeDataW MACRO
       CALL	getNibble
       MOVF	lo, W
       MOVWF	dataPort

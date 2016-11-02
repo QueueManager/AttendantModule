@@ -14,7 +14,11 @@ intEnd:
 ; Button 1 pressed routine.
 ; ========================================
 btn1Action:
-	CALL	msgBtn1
+	;CALL	msgBtn1
+	writeCmd	H'80'
+	writeCmd	H'01'
+	MOVLW	ATCom03
+	CALL	sendCommand
 	GOTO	intEnd
 
 ; ========================================
