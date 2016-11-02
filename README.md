@@ -2,7 +2,7 @@
 
 _Work in progress._
 
-![Please, be patient...](https://raw.githubusercontent.com/QueueManager/AttendantModule.X/master/lcdModule/media/LCDExample.gif)
+![Please, be patient...](https://raw.githubusercontent.com/QueueManager/AttendantModule.X/master/media/LCDExample.gif)
 
 **For more info, please make your way to [Wiki](https://github.com/QueueManager/AttendantModule/wiki).**
 
