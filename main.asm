@@ -104,7 +104,8 @@ setup:
       BSF     TXSTA, TXEN     ;enable transmitter
       
       CALL    loadCommands
-	  CALL	  message
+	  writeCmd	H'80'		; First line command
+;	  CALL	  message
       GOTO	loop
          
 ;====================================================================
@@ -112,8 +113,9 @@ setup:
 ;==================================================================== 
       
 loop:	
-      CALL	delay
-      GOTO	loop
+     CALL	delay
+	 CALL	readSerial
+     GOTO	loop
     
 ;====================================================================
    END

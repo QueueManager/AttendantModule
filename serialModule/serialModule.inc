@@ -7,7 +7,11 @@ RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             CALL    Overflow
             BTFSS   PIR1,  RCIF     ;RX interrupt
             GOTO    RX_Serial
-            MOVFW   RCREG           ;read RX buffer (clears interrupt)
+            
+			
+			MOVFW   RCREG           ;read RX buffer (clears interrupt)
+			writeDataW
+			;writeCmd	H'14'
             RETURN
 
 ; Transmit a byte via serial			
@@ -24,13 +28,23 @@ Overflow:   BCF     RCSTA, CREN     ;clear overflow by disabling receiver
 ;==========================================
 ; Send one of the stored commands via serial
 ;==========================================
-sendCommand MOVWF   FSR
-nextChar    MOVFW   INDF
+sendCommand:MOVWF   FSR
+nextChar:   MOVFW   INDF
 			writeDataW	; Write to LCD
 			MOVFW	INDF
             BTFSC   STATUS, Z       ;end of text = 0
             RETURN
             CALL    TX_Serial	
-	    CALL    delay
+			CALL    delay
             INCF    FSR
             GOTO    nextChar
+			
+;==========================================
+; Wait for a serial data and send to LCD
+;=========================================
+readSerial: CALL	RX_Serial
+			
+			
+			
+
+			RETURN
