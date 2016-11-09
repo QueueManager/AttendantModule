@@ -82,7 +82,7 @@ setup:
       BANKSEL 	dataPort; Bank 0 selection
       CLRF	dataPort	; Data purposes
       CLRF	ctrlPort	; Control purposes
-      CALL  	lcdInit	; Execute LCD display init sequence
+      CALL  lcdInit	; Execute LCD display init sequence
       BSF	INTCON, GIE	; Global Interrupt Enable Bit
       BANKSEL 	IOCA	; Bank 1 selection
       MOVLW	B'110000'
@@ -103,7 +103,8 @@ setup:
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
       
-      CALL     loadCommands
+      CALL    loadCommands
+	  CALL	  message
       GOTO	loop
          
 ;====================================================================
