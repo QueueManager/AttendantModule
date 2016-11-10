@@ -4,3 +4,7 @@
 *nbproject/private
 *.pdsbak
 *.workspace
+*mplabProject/build
+*mplabProject/dist
+*mplabProject/nbproject/Makefile-*
+*mplabProject/nbproject/private
