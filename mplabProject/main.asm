@@ -10,8 +10,8 @@
 ; DEFINITIONS
 ;====================================================================
 
-#include "p16F688.inc"                ; Include register definition file;; __config 0xFFD4
-#include "..\lcdModule\lcdMacros.inc"
+#include "p16f688.inc"                ; Include register definition file;; __config 0xFFD4
+#include "../lcdModule/lcdMacros.inc"
 
  __CONFIG _FOSC_INTOSCIO & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_ON & _FCMEN_ON
 ;====================================================================
@@ -27,6 +27,7 @@ lo	 	 EQU	0x23		; Least significant nibble from data/command
 
 ; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
 ATCOM	 UDATA	0x24
+command  EQU	0x25
 ATCom01	 RES	D'9'		; command "AT+RST"
 ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
 ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
@@ -57,10 +58,10 @@ ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 ;====================================================================
 ; CODE SEGMENT
 ;====================================================================
-#include "..\lcdModule\lcdFunctions.inc"
-#include "..\btnModule\btnFunctions.inc"
-#include "..\serialModule\serialModule.inc"
-#include "..\serialModule\commandModule.inc"
+#include "../lcdModule/lcdFunctions.inc"
+#include "../btnModule/btnFunctions.inc"
+#include "../serialModule/serialModule.inc"
+#include "../serialModule/commandModule.inc"
 
 setup:  
       ; PIC pre configurations
