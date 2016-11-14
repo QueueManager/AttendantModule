@@ -190,7 +190,7 @@ connectWifi:
 		MOVWF	command
 		GOTO	atCommand
 
-startServe:
+startServer:
 		MOVLW	d'1'
 		MOVWF	command
 		GOTO	atCommand
@@ -218,8 +218,8 @@ atCommand:
 
 		MOVF	    command,W
 		ADDWF	    PCL,F
-		GOTO	    connectWifi
-		GOTO	    startServeI
+		GOTO	    connectWifiI
+		GOTO	    startServerI
 		GOTO	    callClientI
 		GOTO	    callPanelI
 
@@ -307,9 +307,6 @@ connectWifiI:
 		MOVLW	    'l'
 		MOVWF	    INDF
 		INCF	    FSR, F
-		MOVLW	    'l'
-		MOVWF	    INDF
-		INCF	    FSR, F
 		MOVLW	    'i'
 		MOVWF	    INDF
 		INCF	    FSR, F
@@ -341,7 +338,7 @@ connectWifiI:
 		MOVWF	    INDF
 		RETURN
 
-startServeI:
+startServerI:
 		; CIPMUX=1
 		MOVWF	    INDF
 		INCF	    FSR, F
