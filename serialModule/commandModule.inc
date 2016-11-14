@@ -1,190 +1,3 @@
-; ========================================
-; Responsible for loading commands into 
-; microcontroller's RAM memomy.
-; ========================================
-loadCommands: 
-	; ====================================
-	; ATCom01. Size=6, "AT+RST"
-	MOVLW	 ATCom01
-	MOVWF    FSR
-    MOVLW    'A'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW    'T'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '+'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW    'R'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW    'S'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW    'T'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   0x0D            ; Carriage return
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x0A            ; Line feed
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x00            ; Use as end of text marker
-    MOVWF	INDF
-	
-	; ====================================
-	; ATCom02. Size=11, "AT+CIPMUX=1"
-	MOVLW	ATCom02
-	MOVWF    FSR
-	MOVLW   'A'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'T'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '+'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'C'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'I'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'P'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'M'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'U'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'X'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '='
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '1'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   0x0D            ; Carriage return
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x0A            ; Line feed
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x00            ; Use as end of text marker
-	MOVWF	INDF
-	
-	; ====================================
-	; ATCom03. Size=31, "AT+CWJAP="IC","icomputacaoufal""
-	MOVLW	 ATCom03
-	MOVWF    FSR
-	MOVLW   'T'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '+'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'C'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'W'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'J'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'A'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'P'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '='
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '"'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'I'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'C'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '"'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   ','
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '"'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'i'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'c'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'o'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'm'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'p'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'u'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   't'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'a'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'c'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'a'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'o'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'u'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'f'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'a'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   'l'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   '"'
-    MOVWF    INDF
-    INCF     FSR, F
-    MOVLW   0x0D            ; Carriage return
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x0A            ; Line feed
-    MOVWF   INDF
-    INCF    FSR, F
-    MOVLW   0x00            ; Use as end of text marker
-	MOVWF	INDF
-	
-	RETURN
-
 connectWifi:
 		MOVLW	d'0'
 		MOVWF	command
@@ -207,14 +20,11 @@ callPanel:
 
 atCommand:
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 
 		MOVF	    command,W
 		ADDWF	    PCL,F
@@ -226,625 +36,360 @@ atCommand:
 connectWifiI:
 		; CWMODE=1
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'W'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'M'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'O'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'D'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		
 		; AT+CWJAP_CUR="dlink",""
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'W'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'J'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '_'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'U'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'R'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'd'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'l'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'i'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'n'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'k'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    ','
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		RETURN
 
 startServerI:
 		; CIPMUX=1
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'M'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'U'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'X'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; AT+CIPSERVER=1,1000
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'R'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'V'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'R'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    ','
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		RETURN
 
 callClientI:
 		; CIPSTART=?TCP?,?192.168.0.100?,1000
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'R'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '9'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '2'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '6'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '8'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    ','
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; AT+CIPSEND=1
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'N'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'D'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; <guiche>
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; AT+CIPCLOSE
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'L'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'O'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		RETURN
 
 callPanelI:
 		; CIPSTART=?TCP?,?192.168.0.102?,1000
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'R'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '9'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '2'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '6'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '8'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '.'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '2'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '"'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    ','
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; AT+CIPSEND=3
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'N'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'D'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '='
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '3'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; <guiche>
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		; <ticket>
 		MOVLW	    '0'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '1'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		; AT+CIPCLOSE
 		MOVLW	    'A'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'T'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    '+'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'I'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'P'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'C'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'L'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'O'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'S'
-		MOVWF	    INDF
-		INCF	    FSR, F
+		CALL	    TX_Serial
 		MOVLW	    'E'
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0D	    ; Carriage return
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x0A	    ; Line feed
-		MOVWF	    INDF
-		INCF	    FSR, F
-		MOVLW	    0x00	    ; Use as end of text marker
-		MOVWF	    INDF
+		CALL	    TX_Serial
 		RETURN

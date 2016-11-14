@@ -103,8 +103,7 @@ setup:
       BSF     RCSTA, CREN     ;continuous RX enable
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
-      
-      CALL    loadCommands
+
 	  writeCmd	H'80'		; First line command
 ;	  CALL	  message
       GOTO	loop
