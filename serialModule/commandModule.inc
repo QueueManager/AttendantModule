@@ -15,7 +15,7 @@ newAtCom:
 ; ======================================			
 connectWifi:
 		CALL		newAtCom
-		; CWMODE=1
+		; CWMODE=1 set as STATION mode
 		MOVLW	    'C'
 		CALL	    TX_Serial
 		MOVLW	    'W'
@@ -36,9 +36,10 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		conStaMsg
 		CALL	    Wait_OK
 		
-		; AT+CWJAP_CUR="dlink",""
+		; AT+CWJAP_CUR="dlink",""  connect to WIFI network
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -84,9 +85,10 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		conWifiMsg
 		CALL	    Wait_OK
 		
-		; AT+CPMUX=1
+		; AT+CPMUX=1 set to multiple connections
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -108,8 +110,12 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		conMultMsg
 		CALL        Wait_OK
 		
+;		CALL		conDone
+	    writeCmd	H'01'		; Clear screen
+        writeCmd	H'80'		; First line command
 		RETURN
 
 ; ======================================	

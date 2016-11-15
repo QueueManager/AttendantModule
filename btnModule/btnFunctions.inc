@@ -18,7 +18,7 @@ btn1Action:
 	writeCmd	H'80'
 	writeCmd	H'01'
 ;	MOVLW	ATCom03
-	CALL	message
+	CALL	helloMessage
 	GOTO	intEnd
 
 ; ========================================

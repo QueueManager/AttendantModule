@@ -58,6 +58,7 @@ command	 RES	D'1'		; command "AT+RST"
 ; CODE SEGMENT
 ;====================================================================
 #include "C:\Users\Bruno\git\Attendant\lcdModule\lcdFunctions.inc"
+#include "C:\Users\Bruno\git\Attendant\lcdModule\lcdMessages.inc"
 #include "C:\Users\Bruno\git\Attendant\btnModule\btnFunctions.inc"
 #include "C:\Users\Bruno\git\Attendant\serialModule\serialModule.inc"
 #include "C:\Users\Bruno\git\Attendant\serialModule\commandModule.inc"
