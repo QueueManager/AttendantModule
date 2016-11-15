@@ -1,0 +1,492 @@
+; ****************************************************************
+; ESP8266 wifi module interface to send data to a webpage.
+;
+; Uses the serial port of the PIC to send and receive AT commands
+; to the ESP8266 module.
+;
+; Serial communications are at the ESP8266 default of 9600 baud.
+;
+; Polling of the serial receive interrupt flag is used instead of
+; an actual interrupt for this simple routine.
+;
+; Receiver overflows are expected because the ESP8266 echos the
+; command strings.
+;
+; Assumes that we are using the 8-MHz internal clock.
+;
+; All routines will exit pointing to bank0.
+; ****************************************************************
+;
+            LIST P=PIC16F688
+            #INCLUDE    <p16f688.inc>
+
+        	ERRORLEVEL	0,	-302	;suppress bank selection messages
+
+            __CONFIG _FOSC_INTOSCIO & _WDT_OFF & _PWRTE_ON & _MCLRE_OFF & _BOD_OFF & _CPD_OFF & _CP_OFF
+
+
+RAM0        UDATA   0x20    ;Bank0 RAM (80 bytes maximum)
+Count       RES 1
+
+;Define command lengths = (number of chars) + 3.
+Command1    RES d'14'       ;AT+CIPMUX=1
+Command2    RES d'23'       ;AT+CIPSERVER=1,40000
+Command3    RES d'18'       ;AT+CIPSEND=0,14 (length of Message1)
+Command4    RES d'16'       ;AT+CIPCLOSE=0
+
+RAM1        UDATA   0xA0    ;Bank1 RAM (80 bytes maximum)
+;Define message lengths = (number of chars) + 1.
+Message1    RES d'15'       ;Hello<br>World
+
+;-----------------------------------
+; Program code starts here
+;-----------------------------------
+
+RESET       CODE    0x00
+            GOTO Init
+
+Int_Vec     CODE    0x04
+            RETFIE
+
+Init        NOP                     ;error if go directly to BANKSEL
+            BANKSEL TRISA           ;bank1
+            CLRF    ANSEL           ;set all as digital
+            MOVLW   0x70
+            MOVWF   OSCCON          ;set for 8-MHz internal clock
+            BANKSEL PORTA           ;bank0
+            MOVLW   0x07
+            MOVWF   CMCON0          ;turn off comparators
+            CLRF    PORTA
+            CLRF    PORTC
+            CALL    Init_Data
+            CALL    Init_Serial
+
+Main_Loop   CALL    Wait_IPD        ;wait for request from webpage
+            CALL    Delay10ms
+            CALL    Send_Data       ;send data to the webpage
+            GOTO    Main_Loop
+
+Init_Serial MOVLW   d'12'           ;9600 baud
+            MOVWF   SPBRG
+            BCF     PIR1,  RCIF     ;clear RX interrupt
+            BSF     RCSTA, SPEN     ;serial port enable
+            BSF     RCSTA, CREN     ;continuous RX enable
+            BCF     TXSTA, SYNC     ;asynchronous mode
+            BSF     TXSTA, TXEN     ;enable transmitter
+            CALL    Wait_ESP        ;wait for ESP8266 to init
+            CALL    Server_On
+            RETURN
+
+Server_On   MOVLW   Command1        ;CIPMUX
+            CALL    Send_Char
+            CALL    Wait_OK
+            MOVLW   Command2        ;CIPSERVER
+            CALL    Send_Char
+            CALL    Wait_OK
+            RETURN
+
+Wait_ESP    CALL    RX_Serial
+            SUBLW   'G'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'O'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'T'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   ' '
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'I'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'P'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            RETURN
+
+Wait_OK     CALL    RX_Serial
+            SUBLW   'O'
+            BTFSS   STATUS, Z
+            GOTO    Wait_OK
+            CALL    RX_Serial
+            SUBLW   'K'
+            BTFSS   STATUS, Z
+            GOTO    Wait_OK
+            RETURN
+
+Wait_IPD    CALL    RX_Serial
+            SUBLW   '+'
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            CALL    RX_Serial
+            SUBLW   'I'
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            CALL    RX_Serial
+            SUBLW   'P'
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            CALL    RX_Serial
+            SUBLW   'D'
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            CALL    RX_Serial
+            SUBLW   ','
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            CALL    RX_Serial
+            SUBLW   '0'
+            BTFSS   STATUS, Z
+            GOTO    Wait_IPD
+            RETURN
+
+Send_Data   MOVLW   Command3        ;CIPSEND
+            CALL    Send_Char
+            CALL    Wait_OK
+            MOVLW   Message1
+            CALL    Send_Char
+            CALL    Wait_OK
+            MOVLW   Command4        ;CIPCLOSE
+            CALL    Send_Char
+            CALL    Wait_OK
+            RETURN
+
+Send_Char   MOVWF   FSR
+Next_Char   MOVFW   INDF
+            BTFSC   STATUS, Z       ;end of text = 0
+            RETURN
+            CALL    TX_Serial
+            INCF    FSR
+            GOTO    Next_Char
+
+;-----------------------------------
+; Serial routines
+;-----------------------------------
+
+RX_Serial   BTFSC   RCSTA, OERR
+            CALL    Overflow
+            BTFSS   PIR1,  RCIF     ;RX interrupt
+            GOTO    RX_Serial
+            MOVFW   RCREG           ;read RX buffer (clears interrupt)
+            RETURN
+
+TX_Serial   BTFSS   PIR1,  TXIF     ;TX interrupt: 1 = TXREG is empty
+            GOTO    TX_Serial       ;not empty
+            MOVWF   TXREG           ;ok to transmit
+            RETURN
+
+Overflow    BCF     RCSTA, CREN     ;clear overflow by disabling receiver
+            BSF     RCSTA, CREN     ;re-enable receiver
+            RETURN
+
+;-----------------------------------
+; Delay routines
+;-----------------------------------
+
+Delay1ms    MOVLW   d'249'
+            CALL    Cntdwn
+            MOVLW   d'249'
+            GOTO    Cntdwn
+
+Delay10ms   MOVLW   d'9'
+            MOVWF   Count
+loop10ms    CALL    Delay1ms
+            DECFSZ  Count,  F
+            GOTO    loop10ms
+            RETURN
+
+Delay100ms  MOVLW   d'99'
+            MOVWF   Count
+loop100ms   CALL    Delay1ms
+            DECFSZ  Count,  F
+            GOTO    loop100ms
+            RETURN
+
+Cntdwn      ADDLW   -1              ;decrement W
+            BTFSS   STATUS, Z       ;Zero flag set?
+            GOTO    Cntdwn          ;No, keep looping
+            RETURN                  ;Yes, timeout done
+
+;-----------------------------------
+; Data Init Routine
+;-----------------------------------
+
+Init_Data   MOVLW   Command1
+            MOVWF   FSR
+            MOVLW   'A'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'T'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '+'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'C'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'I'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'P'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'M'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'U'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'X'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '='
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '1'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0D            ;carriage return
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0A            ;line feed
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x00            ;use as end of text marker
+            MOVWF   INDF
+
+            MOVLW   Command2
+            MOVWF   FSR
+            MOVLW   'A'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'T'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '+'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'C'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'I'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'P'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'S'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'E'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'R'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'V'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'E'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'R'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '='
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '1'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   ','
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '4'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0D            ;carriage return
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0A            ;line feed
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x00            ;use as end of text marker
+            MOVWF   INDF
+
+            MOVLW   Command3
+            MOVWF   FSR
+            MOVLW   'A'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'T'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '+'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'C'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'I'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'P'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'S'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'E'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'N'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'D'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '='
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   ','
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '1'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '4'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0D            ;carriage return
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0A            ;line feed
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x00            ;use as end of text marker
+            MOVWF   INDF
+
+            MOVLW   Command4
+            MOVWF   FSR
+            MOVLW   'A'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'T'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '+'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'C'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'I'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'P'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'C'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'L'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'O'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'S'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'E'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '='
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '0'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0D            ;carriage return
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x0A            ;line feed
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x00            ;use as end of text marker
+            MOVWF   INDF
+
+            MOVLW   Message1
+            MOVWF   FSR
+            MOVLW   'H'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'e'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'l'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'l'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'o'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '<'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'b'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'r'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   '>'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'W'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'o'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'r'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'l'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   'd'
+            MOVWF   INDF
+            INCF    FSR, F
+            MOVLW   0x00            ;use as end of text marker
+            MOVWF   INDF
+            RETURN
+
+;-------------------------------------------------------------------------------
+
+        END

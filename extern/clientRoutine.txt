@@ -1,0 +1,70 @@
+
+ready
+WIFI CONNECTED
+WIFI GOT IP
+AT+CIFSR
++CIFSR:STAIP,"192.168.0.101"
++CIFSR:STAMAC,"18:fe:34:e1:4c:80"
+
+OK
+AT+CWMODE=1
+
+OK
+AT+CWJAP="dlink",""
+WIFI DISCONNECT
+WIFI CONNECTED
+WIFI GOT IP
+
+OK
+AT+CIPMUX=1
+
+OK
+AT+CIPSTART=0,"TCP","192.168.0.102",1000
+0,CONNECT
+
+OK
+AT+CIPSEND=0,5
+
+OK
+> 
+busy s...
+
+Recv 5 bytes
+
+SEND OK
+AT+CIPSEND=0,3
+
+OK
+> 55
+busy s...
+
+Recv 3 bytes
+
+SEND OK
+0,CLOSED
+AT+CIPSEND=0,5
+link is not valid
+
+ERROR
+AT+CIPSTART=0,"TCP","192.168.0.102",1000
+0,CONNECT
+
+OK
+AT+CIPSEND=0,5
+
+OK
+> 
+busy s...
+
+Recv 5 bytes
+
+SEND OK
+AT+CIPSEND=0,3
+
+OK
+> NO
+busy s...
+
+Recv 3 bytes
+
+SEND OK
