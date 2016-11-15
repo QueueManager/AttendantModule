@@ -83,6 +83,30 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		
+		; AT+CPMUX=1
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'M'
+		CALL	    TX_Serial
+		MOVLW	    'U'
+		CALL	    TX_Serial
+		MOVLW	    'X'
+		CALL	    TX_Serial
+		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
 		RETURN
 
 ; ======================================	

@@ -106,8 +106,8 @@ setup:
 ;     CALL    loadCommands
 ;     CALL    message
       CALL	connectWifi
-      CALL	requestTicket
-      CALL	informTicket
+;      CALL	requestTicket
+;      CALL	informTicket
       
       GOTO	loop
          
