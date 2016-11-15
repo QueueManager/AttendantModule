@@ -37,11 +37,6 @@ ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 #define btn2 	ctrlPort, 5 ; Button 2
 
 
-;lcdPrt	 UDATA	0x05	
-;ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
-;dataPort RES	1	; PORTC=0x06
-;	 GLOBAL i, j, hi, lo, dataPort, ctrlPort
-      
 ;====================================================================
 ; RESET and INTERRUPT VECTORS
 ;====================================================================     
@@ -103,7 +98,6 @@ setup:
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
       
-      CALL    loadCommands
 	  writeCmd	H'80'		; First line command
 ;	  CALL	  message
       GOTO	loop

@@ -17,8 +17,8 @@ btn1Action:
 	;CALL	msgBtn1
 	writeCmd	H'80'
 	writeCmd	H'01'
-	MOVLW	ATCom03
-	CALL	sendCommand
+;	MOVLW	ATCom03
+	CALL	message
 	GOTO	intEnd
 
 ; ========================================

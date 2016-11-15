@@ -7,8 +7,6 @@ RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             CALL    Overflow
             BTFSS   PIR1,  RCIF     ;RX interrupt
             GOTO    RX_Serial
-            
-			
 			MOVFW   RCREG           ;read RX buffer (clears interrupt)
 			writeDataW
 			;writeCmd	H'14'
@@ -43,8 +41,4 @@ nextChar:   MOVFW   INDF
 ; Wait for a serial data and send to LCD
 ;=========================================
 readSerial: CALL	RX_Serial
-			
-			
-			
-
 			RETURN
