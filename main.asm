@@ -117,6 +117,7 @@ setup:
       
 loop:	
      CALL	delay
+     CALL	readSerial
      GOTO	loop
     
 ;====================================================================

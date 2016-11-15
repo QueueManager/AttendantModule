@@ -36,6 +36,7 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL	    Wait_OK
 		
 		; AT+CWJAP_CUR="dlink",""
 		CALL		newAtCom
@@ -83,6 +84,7 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL	    Wait_OK
 		
 		; AT+CPMUX=1
 		CALL		newAtCom
@@ -106,6 +108,7 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL        Wait_OK
 		
 		RETURN
 

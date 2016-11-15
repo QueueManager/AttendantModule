@@ -8,8 +8,6 @@ RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             BTFSS   PIR1,  RCIF     ;RX interrupt
             GOTO    RX_Serial
 			MOVFW   RCREG           ;read RX buffer (clears interrupt)
-			writeDataW
-			;writeCmd	H'14'
             RETURN
 
 ; Transmit a byte via serial			
@@ -24,7 +22,35 @@ Overflow:   BCF     RCSTA, CREN     ;clear overflow by disabling receiver
             RETURN
 			
 ;==========================================
-; Send one of the stored commands via serial
+; Wait for a serial data and send to LCD
+;==========================================
+readSerial: 
+			CALL	RX_Serial
+			writeDataW
+			;writeCmd	H'14'
+			RETURN
+			
+; =========================================
+; Wait for and OK from the AT connection
+; =========================================
+Wait_OK: 
+			CALL    RX_Serial
+            SUBLW   'O'
+            BTFSS   STATUS, Z
+            GOTO    Wait_OK
+            CALL    RX_Serial
+            SUBLW   'K'
+            BTFSS   STATUS, Z
+            GOTO    Wait_OK
+			CALL	RX_Serial
+			SUBLW	0x0D		; Carriage
+			BTFSS   STATUS, Z
+            GOTO    Wait_OK
+            RETURN
+			
+;==========================================
+; Send one of the stored commands via serial.
+; Not used anymore. Stayed here for info purposes.
 ;==========================================
 sendCommand:MOVWF   FSR
 nextChar:   MOVFW   INDF
@@ -36,10 +62,4 @@ nextChar:   MOVFW   INDF
 			CALL    delay
             INCF    FSR
             GOTO    nextChar
-			
-;==========================================
-; Wait for a serial data and send to LCD
-;==========================================
-readSerial: CALL	RX_Serial
-			RETURN
 			
