@@ -39,6 +39,7 @@ nextChar:   MOVFW   INDF
 			
 ;==========================================
 ; Wait for a serial data and send to LCD
-;=========================================
+;==========================================
 readSerial: CALL	RX_Serial
 			RETURN
+			

@@ -1,39 +1,20 @@
-connectWifi:
-		MOVLW	d'0'
-		MOVWF	command
-		GOTO	atCommand
-
-startServer:
-		MOVLW	d'1'
-		MOVWF	command
-		GOTO	atCommand
-
-callClient:
-		MOVLW	d'2'
-		MOVWF	command
-		GOTO	atCommand
-
-callPanel:
-		MOVLW	d'3'
-		MOVWF	command
-		GOTO	atCommand
-
-atCommand:
+;===========================================
+; Start of a every new AT command
+;===========================================
+newAtCom:
 		MOVLW	    'A'
 		CALL	    TX_Serial
 		MOVLW	    'T'
 		CALL	    TX_Serial
 		MOVLW	    '+'
-		CALL	    TX_Serial
+		CALL	    TX_Serial		
+		RETURN
 
-		MOVF	    command,W
-		ADDWF	    PCL,F
-		GOTO	    connectWifiI
-		GOTO	    startServerI
-		GOTO	    callClientI
-		GOTO	    callPanelI
-
-connectWifiI:
+; ======================================	
+; Connect to WIFI current network
+; ======================================			
+connectWifi:
+		CALL		newAtCom
 		; CWMODE=1
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -51,14 +32,13 @@ connectWifiI:
 		CALL	    TX_Serial
 		MOVLW	    '1'
 		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
 		
 		; AT+CWJAP_CUR="dlink",""
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
+		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
 		MOVLW	    'W'
@@ -99,11 +79,269 @@ connectWifiI:
 		CALL	    TX_Serial
 		MOVLW	    '"'
 		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
 		RETURN
 
-startServerI:
-		; CIPMUX=1
+; ======================================	
+; Request next ticket information to
+; User Module
+; ======================================	
+requestTicket:
+		; CIPSTART=?TCP?,?192.168.0.100?,1000
+		CALL		newAtCom
+		MOVLW	    'C'
 		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    'A'
+		CALL	    TX_Serial
+		MOVLW	    'R'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '9'
+		CALL	    TX_Serial
+		MOVLW	    '2'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '6'
+		CALL	    TX_Serial
+		MOVLW	    '8'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    ','
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
+		; AT+CIPSEND=1
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'E'
+		CALL	    TX_Serial
+		MOVLW	    'N'
+		CALL	    TX_Serial
+		MOVLW	    'D'
+		CALL	    TX_Serial
+		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		; <guiche>
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
+		; AT+CIPCLOSE
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'L'
+		CALL	    TX_Serial
+		MOVLW	    'O'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'E'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		RETURN
+	
+; ======================================	
+; Send ticket + guiche information to
+; Panel module 
+; ======================================	
+informTicket:
+		; CIPSTART=?TCP?,?192.168.0.102?,1000
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    'A'
+		CALL	    TX_Serial
+		MOVLW	    'R'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '9'
+		CALL	    TX_Serial
+		MOVLW	    '2'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '6'
+		CALL	    TX_Serial
+		MOVLW	    '8'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '.'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '2'
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    ','
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
+		; AT+CIPSEND=3
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'E'
+		CALL	    TX_Serial
+		MOVLW	    'N'
+		CALL	    TX_Serial
+		MOVLW	    'D'
+		CALL	    TX_Serial
+		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '3'
+		CALL	    TX_Serial
+		; <guiche>
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		; <ticket>
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    '1'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
+		; AT+CIPCLOSE
+		CALL		newAtCom
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'I'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'L'
+		CALL	    TX_Serial
+		MOVLW	    'O'
+		CALL	    TX_Serial
+		MOVLW	    'S'
+		CALL	    TX_Serial
+		MOVLW	    'E'
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		RETURN
+
+; ======================================	
+; Command to start a server. Not used
+; In this module. Just for reference 
+; purposes.
+; ======================================	
+startServer:
+		; CIPMUX=1
+		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
 		MOVLW	    'I'
@@ -120,13 +358,13 @@ startServerI:
 		CALL	    TX_Serial
 		MOVLW	    '1'
 		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
+		
 		; AT+CIPSERVER=1,1000
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
+		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
 		MOVLW	    'I'
@@ -159,237 +397,8 @@ startServerI:
 		CALL	    TX_Serial
 		MOVLW	    '0'
 		CALL	    TX_Serial
-		RETURN
-
-callClientI:
-		; CIPSTART=?TCP?,?192.168.0.100?,1000
+		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'R'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '='
-		CALL	    TX_Serial
-		MOVLW	    '"'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '9'
-		CALL	    TX_Serial
-		MOVLW	    '2'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '6'
-		CALL	    TX_Serial
-		MOVLW	    '8'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '"'
-		CALL	    TX_Serial
-		MOVLW	    ','
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		; AT+CIPSEND=1
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'E'
-		CALL	    TX_Serial
-		MOVLW	    'N'
-		CALL	    TX_Serial
-		MOVLW	    'D'
-		CALL	    TX_Serial
-		MOVLW	    '='
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		; <guiche>
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		; AT+CIPCLOSE
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'L'
-		CALL	    TX_Serial
-		MOVLW	    'O'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'E'
-		CALL	    TX_Serial
-		RETURN
-
-callPanelI:
-		; CIPSTART=?TCP?,?192.168.0.102?,1000
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'R'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '='
-		CALL	    TX_Serial
-		MOVLW	    '"'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '9'
-		CALL	    TX_Serial
-		MOVLW	    '2'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '6'
-		CALL	    TX_Serial
-		MOVLW	    '8'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '.'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '2'
-		CALL	    TX_Serial
-		MOVLW	    '"'
-		CALL	    TX_Serial
-		MOVLW	    ','
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		; AT+CIPSEND=3
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'E'
-		CALL	    TX_Serial
-		MOVLW	    'N'
-		CALL	    TX_Serial
-		MOVLW	    'D'
-		CALL	    TX_Serial
-		MOVLW	    '='
-		CALL	    TX_Serial
-		MOVLW	    '3'
-		CALL	    TX_Serial
-		; <guiche>
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		; <ticket>
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		; AT+CIPCLOSE
-		MOVLW	    'A'
-		CALL	    TX_Serial
-		MOVLW	    'T'
-		CALL	    TX_Serial
-		MOVLW	    '+'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'L'
-		CALL	    TX_Serial
-		MOVLW	    'O'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'E'
+		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
 		RETURN

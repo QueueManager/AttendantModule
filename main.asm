@@ -27,9 +27,9 @@ lo	 	 EQU	0x23		; Least significant nibble from data/command
 
 ; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
 ATCOM	 UDATA	0x24
-ATCom01	 RES	D'9'		; command "AT+RST"
-ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
-ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
+command	 RES	D'1'		; command "AT+RST"
+;ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
+;ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 
 #define	rs	ctrlPort, 0	; R/S (Data/Command)
 #define	en	ctrlPort, 1	; Enable
@@ -37,6 +37,11 @@ ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 #define btn2 	ctrlPort, 5 ; Button 2
 
 
+;lcdPrt	 UDATA	0x05	
+;ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
+;dataPort RES	1	; PORTC=0x06
+;	 GLOBAL i, j, hi, lo, dataPort, ctrlPort
+      
 ;====================================================================
 ; RESET and INTERRUPT VECTORS
 ;====================================================================     
@@ -98,8 +103,12 @@ setup:
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
       
-	  writeCmd	H'80'		; First line command
-;	  CALL	  message
+;     CALL    loadCommands
+;     CALL    message
+      CALL	connectWifi
+      CALL	requestTicket
+      CALL	informTicket
+      
       GOTO	loop
          
 ;====================================================================
@@ -108,7 +117,6 @@ setup:
       
 loop:	
      CALL	delay
-	 CALL	readSerial
      GOTO	loop
     
 ;====================================================================
