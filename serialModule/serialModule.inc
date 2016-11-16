@@ -7,8 +7,8 @@ RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             CALL    Overflow
 			MOVFW   RCREG           ;read RX buffer (clears interrupt)
 			;======================== Testing if receives
-			writeDataW
-			MOVFW	RCREG
+			;writeDataW
+			;MOVFW	RCREG
 			;======================== End of test
 			
             RETURN
