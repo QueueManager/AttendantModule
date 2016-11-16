@@ -8,6 +8,11 @@ RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             BTFSS   PIR1,  RCIF     ;RX interrupt
             GOTO    RX_Serial
 			MOVFW   RCREG           ;read RX buffer (clears interrupt)
+			;======================== Testing if receives
+			writeDataW
+			MOVFW	RCREG
+			;======================== End of test
+			
             RETURN
 
 ; Transmit a byte via serial			
@@ -41,10 +46,6 @@ Wait_OK:
             CALL    RX_Serial
             SUBLW   'K'
             BTFSS   STATUS, Z
-            GOTO    Wait_OK
-			CALL	RX_Serial
-			SUBLW	0x0D		; Carriage return
-			BTFSS   STATUS, Z
             GOTO    Wait_OK
             RETURN
 	
