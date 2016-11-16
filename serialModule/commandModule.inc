@@ -4,7 +4,7 @@
 ; User Module
 ; ======================================	
 requestTicket:
-		; CIPSTART=?TCP?,?192.168.0.100?,1000
+		; CIPSTART=0,"TCP","192.168.0.101",1000
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -23,6 +23,22 @@ requestTicket:
 		MOVLW	    'T'
 		CALL	    TX_Serial
 		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    ','
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    ','
 		CALL	    TX_Serial
 		MOVLW	    '"'
 		CALL	    TX_Serial
@@ -50,7 +66,7 @@ requestTicket:
 		CALL	    TX_Serial
 		MOVLW	    '0'
 		CALL	    TX_Serial
-		MOVLW	    '0'
+		MOVLW	    '1'
 		CALL	    TX_Serial
 		MOVLW	    '"'
 		CALL	    TX_Serial
@@ -68,6 +84,9 @@ requestTicket:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		tcpStartMsg
+		CALL		Wait_OK		
+		CALL		tcpNextMsg	; ===> POINT NUMBER 1
 		
 		; AT+CIPSEND=1
 		CALL		newAtCom
@@ -87,15 +106,28 @@ requestTicket:
 		CALL	    TX_Serial
 		MOVLW	    '='
 		CALL	    TX_Serial
-		MOVLW	    '1'
+		MOVLW	    '0'			; Connect ID (multiple conn enabled)
 		CALL	    TX_Serial
-		; <guiche>
-		MOVLW	    '1'
+		MOVLW	    ','
+		CALL	    TX_Serial		
+		MOVLW	    '1'			; Number of bytes to send
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 2
+		MOVLW	    '0'			; DATA TO SEND <guiche>
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 3
+		
+		; WAIT UNTIL WE RECEIVE SOME DATA
+		CALL		Wait_IPD
 		
 		; AT+CIPCLOSE
 		CALL		newAtCom
@@ -119,6 +151,8 @@ requestTicket:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 4
 		RETURN
 	
 ; ======================================	
@@ -126,7 +160,7 @@ requestTicket:
 ; Panel module 
 ; ======================================	
 informTicket:
-		; CIPSTART=?TCP?,?192.168.0.102?,1000
+		; CIPSTART=0,"TCP","192.168.0.102",1000
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -145,6 +179,22 @@ informTicket:
 		MOVLW	    'T'
 		CALL	    TX_Serial
 		MOVLW	    '='
+		CALL	    TX_Serial
+		MOVLW	    '0'
+		CALL	    TX_Serial
+		MOVLW	    ','
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    'T'
+		CALL	    TX_Serial
+		MOVLW	    'C'
+		CALL	    TX_Serial
+		MOVLW	    'P'
+		CALL	    TX_Serial
+		MOVLW	    '"'
+		CALL	    TX_Serial
+		MOVLW	    ','
 		CALL	    TX_Serial
 		MOVLW	    '"'
 		CALL	    TX_Serial
@@ -190,8 +240,11 @@ informTicket:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		tcpStartMsg
+		CALL		Wait_OK		
+		CALL		tcpNextMsg	; ===> POINT NUMBER 1
 		
-		; AT+CIPSEND=3
+		; AT+CIPSEND=1
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -209,20 +262,28 @@ informTicket:
 		CALL	    TX_Serial
 		MOVLW	    '='
 		CALL	    TX_Serial
-		MOVLW	    '3'
+		MOVLW	    '0'			; Connect ID (multiple conn enabled)
 		CALL	    TX_Serial
-		; <guiche>
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		; <ticket>
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '1'
+		MOVLW	    ','
+		CALL	    TX_Serial		
+		MOVLW	    '1'			; Number of bytes to send
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 2
+		MOVLW	    '0'			; DATA TO SEND <guiche>
+		CALL	    TX_Serial
+		MOVLW	    0x0D		; Carriage Return
+		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 3
+		
+		; WAIT UNTIL WE RECEIVE SOME DATA
+		CALL		Wait_IPD
 		
 		; AT+CIPCLOSE
 		CALL		newAtCom
@@ -246,8 +307,11 @@ informTicket:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		Wait_OK
+		CALL		tcpNextMsg	; ===> POINT NUMBER 4
 		RETURN
-
+		
+		
 ; ======================================	
 ; Command to start a server. Not used
 ; In this module. Just for reference 

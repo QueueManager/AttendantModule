@@ -137,3 +137,52 @@ conDone:
 	  writeData	'e'
 	  writeData	'!'
 	  RETURN	
+	  
+; ==========================================
+; Open TCP conection
+; ==========================================
+tcpStartMsg:
+	  writeCmd	H'01'		; Clear screen
+      writeCmd	H'80'		; First line command
+      writeData	'T'
+      writeData	'C'
+      writeData	'P'
+	  RETURN
+
+; ==========================================
+; Send data to User Module; Close connection.
+; ==========================================
+tcpNextMsg:
+      writeData	'.'
+	  RETURN
+
+; ==========================================
+; Show next guichet message
+; ==========================================
+guicheMsg:
+	  writeCmd	H'01'		; Clear screen
+      writeCmd	H'80'		; First line command
+	  writeData 'G'
+	  writeData 'u'
+	  writeData 'i'
+	  writeData 'c'
+	  writeData 'h'
+	  writeData 'e'
+	  writeData ':'
+	  writeData ' ' 
+	  RETURN
+	  
+; ==========================================
+; Show next ticket message
+; ==========================================
+ticketMsg:
+	  writeCmd	H'C0'		; Second line command	 
+	  writeData 'T'
+	  writeData 'i'
+	  writeData 'c'
+	  writeData 'k'
+	  writeData 'e'
+	  writeData 't'
+	  writeData ':'
+	  writeData ' '
+	  RETURN

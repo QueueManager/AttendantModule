@@ -24,10 +24,14 @@ i	 	 EQU	0x20		; Index for loop
 j	 	 EQU	0x21		; Index for loop
 hi	 	 EQU	0x22		; Most  significant nibble from data/command
 lo	 	 EQU	0x23		; Least significant nibble from data/command
+ticketType	 EQU	0x24
+ticketChar0	 EQU	0x25		; Next ticket to be called
+ticketChar1	 EQU	0x26
+ticketChar2	 EQU	0x27
 
 ; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
-ATCOM	 UDATA	0x24
-command	 RES	D'1'		; command "AT+RST"
+;ATCOM	 UDATA	0x24
+;command	 RES	D'1'		; command "AT+RST"
 ;ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
 ;ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 
@@ -62,6 +66,7 @@ command	 RES	D'1'		; command "AT+RST"
 #include "C:\Users\Bruno\git\Attendant\btnModule\btnFunctions.inc"
 #include "C:\Users\Bruno\git\Attendant\serialModule\serialModule.inc"
 #include "C:\Users\Bruno\git\Attendant\serialModule\commandModule.inc"
+#include "C:\Users\Bruno\git\Attendant\serialModule\connectModule.inc"
 
 setup:  
       ; PIC pre configurations
@@ -105,10 +110,10 @@ setup:
       BSF     TXSTA, TXEN     ;enable transmitter
       
 ;     CALL    loadCommands
-;     CALL    message
-      CALL	connectWifi
-;      CALL	requestTicket
-;      CALL	informTicket
+      CALL	helloMessage
+;     CALL	connectWifi
+;     CALL	requestTicket
+;     CALL	informTicket
       
       GOTO	loop
          
@@ -118,7 +123,7 @@ setup:
       
 loop:	
      CALL	delay
-     CALL	readSerial
+;    CALL	readSerial
      GOTO	loop
     
 ;====================================================================
