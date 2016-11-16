@@ -96,14 +96,14 @@ Wait_IPD:
 			CALL	RX_Serial	; TicketType
 			MOVWF	ticketType
 			writeDataW
-			CALL	RX_Serial	; TicketChar0
-			MOVWF	ticketChar0	
+			CALL	RX_Serial	; TicketChar2
+			MOVWF	ticketChar2
 			writeDataW
 			CALL	RX_Serial	; TicketChar1
 			MOVWF	ticketChar1
 			writeDataW
-			CALL	RX_Serial	; TicketChar2
-			MOVWF	ticketChar2
+			CALL	RX_Serial	; TicketChar0
+			MOVWF	ticketChar0
 			writeDataW			
 			
             RETURN

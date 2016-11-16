@@ -266,7 +266,7 @@ informTicket:
 		CALL	    TX_Serial
 		MOVLW	    ','
 		CALL	    TX_Serial		
-		MOVLW	    '1'			; Number of bytes to send
+		MOVLW	    '5'			; Number of bytes to send
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
@@ -276,14 +276,17 @@ informTicket:
 		CALL		tcpNextMsg	; ===> POINT NUMBER 2
 		MOVLW	    '0'			; DATA TO SEND <guiche>
 		CALL	    TX_Serial
+		MOVFW	    ticketChar0	; DATA TO SEND <ticket0>
+		CALL	    TX_Serial
+		MOVFW	    ticketChar1	; DATA TO SEND <ticket1>
+		CALL	    TX_Serial
+		MOVFW	    ticketChar2	; DATA TO SEND <ticket2>
+		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL		Wait_OK
 		CALL		tcpNextMsg	; ===> POINT NUMBER 3
-		
-		; WAIT UNTIL WE RECEIVE SOME DATA
-		CALL		Wait_IPD
 		
 		; AT+CIPCLOSE
 		CALL		newAtCom

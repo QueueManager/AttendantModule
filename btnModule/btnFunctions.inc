@@ -25,5 +25,14 @@ btn1Action:
 ; Button 2 pressed routine.
 ; ========================================
 btn2Action:
-	CALL	msgBtn2
+	;CALL	msgBtn2
+	writeCmd	H'80'
+	writeCmd	H'01'
+	MOVFW	ticketChar0
+	writeDataW
+	MOVFW	ticketChar0
+	SUBLW	'Z'
+	BTFSC   STATUS, Z
+    GOTO	intEnd
+	CALL	informTicket
 	GOTO 	intEnd

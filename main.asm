@@ -108,7 +108,11 @@ setup:
       BSF     RCSTA, CREN     ;continuous RX enable
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
-      
+ 
+	  ; Init ticketChar0 as -1
+	  MOVLW	'Z'
+	  MOVWF	ticketChat0
+	  
 ;     CALL    loadCommands
       CALL	helloMessage
 ;     CALL	connectWifi
