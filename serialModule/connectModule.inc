@@ -1,3 +1,6 @@
+;===========================================
+; Start of a every new AT command
+;===========================================
 newAtCom:
 		MOVLW	    'A'
 		CALL	    TX_Serial
@@ -6,10 +9,13 @@ newAtCom:
 		MOVLW	    '+'
 		CALL	    TX_Serial		
 		RETURN
-		
+
+; ======================================	
+; Connect to WIFI current network
+; ======================================			
 connectWifi:
 		CALL		newAtCom
-		; CWMODE=1
+		; CWMODE=1 set as STATION mode
 		MOVLW	    'C'
 		CALL	    TX_Serial
 		MOVLW	    'W'
@@ -30,8 +36,10 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		conStaMsg
+		CALL	    Wait_OK
 		
-		; AT+CWJAP_CUR="dlink",""
+		; AT+CWJAP_CUR="dlink",""  connect to WIFI network
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -77,10 +85,10 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
-		RETURN
-
-startServer:
-		; CIPMUX=1
+		CALL		conWifiMsg
+		CALL	    Wait_OK
+		
+		; AT+CPMUX=1 set to multiple connections
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -102,44 +110,8 @@ startServer:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
+		CALL		conMultMsg
+		CALL        Wait_OK
 		
-		; AT+CIPSERVER=1,1000
-		CALL		newAtCom
-		CALL	    TX_Serial
-		MOVLW	    'C'
-		CALL	    TX_Serial
-		MOVLW	    'I'
-		CALL	    TX_Serial
-		MOVLW	    'P'
-		CALL	    TX_Serial
-		MOVLW	    'S'
-		CALL	    TX_Serial
-		MOVLW	    'E'
-		CALL	    TX_Serial
-		MOVLW	    'R'
-		CALL	    TX_Serial
-		MOVLW	    'V'
-		CALL	    TX_Serial
-		MOVLW	    'E'
-		CALL	    TX_Serial
-		MOVLW	    'R'
-		CALL	    TX_Serial
-		MOVLW	    '='
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    ','
-		CALL	    TX_Serial
-		MOVLW	    '1'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    '0'
-		CALL	    TX_Serial
-		MOVLW	    0x0D		; Carriage Return
-		CALL	    TX_Serial
-		MOVLW	    0x0A		; Line feed
-		CALL	    TX_Serial
+		CALL		conDone
 		RETURN
