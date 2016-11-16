@@ -104,15 +104,23 @@ setup:
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
 
-     CALL	connectWifi
-     CALL	helloMessage
+
+    CALL	helloMessage
 
     MOVLW	'Z' ; Init ticketChar0 as Z
     MOVWF	ticketChar0
     MOVLW	'5' ; Init guiche number
     MOVWF	guicheNum
 
-      GOTO	loop
+    CALL	delay
+    CALL	delay
+    CALL	delay
+    CALL	delay
+    
+    CALL	connectWifi
+    
+    
+    GOTO	loop
 
 ;====================================================================
 ; MAIN LOOP
