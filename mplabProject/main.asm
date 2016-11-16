@@ -29,17 +29,7 @@ ticketChar0	 EQU	0x25		; Next ticket to be called
 ticketChar1	 EQU	0x26
 ticketChar2	 EQU	0x27
 guicheNum	 EQU	0x28
-<<<<<<< HEAD
-	 
-=======
 
-; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
-;ATCOM	 UDATA	0x24
-;command	 RES	D'1'		; command "AT+RST"
-;ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
-;ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
-
->>>>>>> d2be5df11f1ab28b75b148b3fa551e6ade495701
 #define	rs	ctrlPort, 0	; R/S (Data/Command)
 #define	en	ctrlPort, 1	; Enable
 #define	btn1 	ctrlPort, 4 ; Button 1
@@ -68,18 +58,12 @@ guicheNum	 EQU	0x28
 ;====================================================================
 #include "../lcdModule/lcdMessages.inc"
 #include "../lcdModule/lcdFunctions.inc"
-#include "../lcdModule/lcdMessages.inc"
 #include "../btnModule/btnFunctions.inc"
 #include "../serialModule/serialModule.inc"
 #include "../serialModule/commandModule.inc"
 #include "../serialModule/connectModule.inc"
-<<<<<<< HEAD
-      
-setup:  
-=======
 
 setup:
->>>>>>> d2be5df11f1ab28b75b148b3fa551e6ade495701
       ; PIC pre configurations
       BANKSEL	CMCON0	 ; Bank 1 selction
       MOVLW	0x07
@@ -119,26 +103,15 @@ setup:
       BSF     RCSTA, CREN     ;continuous RX enable
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
-<<<<<<< HEAD
-      
-     CALL	connectWifi
-     CALL	helloMessage      
-   
-=======
 
      CALL	connectWifi
      CALL	helloMessage
 
->>>>>>> d2be5df11f1ab28b75b148b3fa551e6ade495701
     MOVLW	'Z' ; Init ticketChar0 as Z
     MOVWF	ticketChar0
     MOVLW	'5' ; Init guiche number
     MOVWF	guicheNum
-<<<<<<< HEAD
-	  
-=======
 
->>>>>>> d2be5df11f1ab28b75b148b3fa551e6ade495701
       GOTO	loop
 
 ;====================================================================
