@@ -5,8 +5,6 @@
 ; Wait for a received byte
 RX_Serial:  BTFSC   RCSTA, OERR		;Overun
             CALL    Overflow
-            BTFSS   PIR1,  RCIF     ;RX interrupt
-            GOTO    RX_Serial
 			MOVFW   RCREG           ;read RX buffer (clears interrupt)
 			;======================== Testing if receives
 			writeDataW
