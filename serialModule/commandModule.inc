@@ -118,7 +118,7 @@ requestTicket:
 		CALL	    TX_Serial
 		CALL		Wait_OK
 		CALL		tcpNextMsg	; ===> POINT NUMBER 2
-		MOVLW	    '0'			; DATA TO SEND <guiche>
+		MOVFW	    guicheNum   ; DATA TO SEND <guiche>
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
@@ -274,7 +274,9 @@ informTicket:
 		CALL	    TX_Serial
 		CALL		Wait_OK
 		CALL		tcpNextMsg	; ===> POINT NUMBER 2
-		MOVLW	    '0'			; DATA TO SEND <guiche>
+		MOVFW	    guicheNum   ; DATA TO SEND <guiche>
+		CALL	    TX_Serial
+		MOVFW	    ticketType  ; DATA TO SEND <ticketType>
 		CALL	    TX_Serial
 		MOVFW	    ticketChar0	; DATA TO SEND <ticket0>
 		CALL	    TX_Serial

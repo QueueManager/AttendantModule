@@ -40,37 +40,6 @@ helloMessage:
       writeData	's'
       writeData	'!'
       RETURN
- 
-; =========================================
-; Button1 was pressed.
-; =========================================  
-msgBtn1:
-      writeCmd	H'01'		; Clear screen
-      writeCmd	H'80'		; First line command
-      writeData	'B'
-      writeData	't'
-      writeData	'n'
-      writeData	'1'
-      writeData	'.'
-      writeData	'.'
-      writeData	'.'
-      RETURN
-
-; =========================================
-; Button2 was pressed.
-; =========================================  
-msgBtn2:
-      writeCmd	H'01'		; Clear screen
-      writeCmd	H'80'		; First line command
-      writeData	'B'
-      writeData	't'
-      writeData	'n'
-      writeData	'2'
-      writeData	'.'
-      writeData	'.'
-      writeData	'.'
-;      writeCmd	H'C0'		; Second line command	
-      RETURN
 	  
 ; ==========================================
 ; Seting station mode at ESP8266
@@ -157,9 +126,9 @@ tcpNextMsg:
 	  RETURN
 
 ; ==========================================
-; Show next guichet message
+; Show current ticket and guiche info
 ; ==========================================
-guicheMsg:
+ticketMsg:
 	  writeCmd	H'01'		; Clear screen
       writeCmd	H'80'		; First line command
 	  writeData 'G'
@@ -169,13 +138,9 @@ guicheMsg:
 	  writeData 'h'
 	  writeData 'e'
 	  writeData ':'
-	  writeData ' ' 
-	  RETURN
-	  
-; ==========================================
-; Show next ticket message
-; ==========================================
-ticketMsg:
+	  writeData ' '
+	  MOVFW		guicheNum
+	  writeDataW
 	  writeCmd	H'C0'		; Second line command	 
 	  writeData 'T'
 	  writeData 'i'
@@ -185,4 +150,12 @@ ticketMsg:
 	  writeData 't'
 	  writeData ':'
 	  writeData ' '
+	  MOVFW		ticketType
+	  writeDataW
+	  MOVFW		ticketChar2
+	  writeDataW
+	  MOVFW		ticketChar1
+	  writeDataW
+	  MOVFW		ticketChar0
+	  writeDataW	  
 	  RETURN

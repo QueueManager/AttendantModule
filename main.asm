@@ -28,6 +28,7 @@ ticketType	 EQU	0x24
 ticketChar0	 EQU	0x25		; Next ticket to be called
 ticketChar1	 EQU	0x26
 ticketChar2	 EQU	0x27
+guicheNum	 EQU	0x28
 
 ; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
 ;ATCOM	 UDATA	0x24
@@ -108,17 +109,15 @@ setup:
       BSF     RCSTA, CREN     ;continuous RX enable
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
- 
-	  ; Init ticketChar0 as -1
-	  MOVLW	'Z'
-	  MOVWF	ticketChat0
-	  
-;     CALL    loadCommands
-      CALL	helloMessage
-;     CALL	connectWifi
-;     CALL	requestTicket
-;     CALL	informTicket
       
+     CALL	connectWifi
+     CALL	helloMessage      
+   
+    MOVLW	'Z' ; Init ticketChar0 as Z
+    MOVWF	ticketChar0
+    MOVLW	'5' ; Init guiche number
+    MOVWF	guicheNum
+	  
       GOTO	loop
          
 ;====================================================================
@@ -127,7 +126,6 @@ setup:
       
 loop:	
      CALL	delay
-;    CALL	readSerial
      GOTO	loop
     
 ;====================================================================
