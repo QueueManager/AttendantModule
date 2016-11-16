@@ -110,7 +110,7 @@ setup:
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
       
-     CALL	connectWifi
+     CALL	connectWifi	
      CALL	helloMessage      
    
     MOVLW	'Z' ; Init ticketChar0 as Z

@@ -14,6 +14,7 @@ newAtCom:
 ; Connect to WIFI current network
 ; ======================================			
 connectWifi:
+		CALL		conStaMsg
 		CALL		newAtCom
 		; CWMODE=1 set as STATION mode
 		MOVLW	    'C'
@@ -34,12 +35,13 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
-		MOVLW	    0x0A		; Line feed
-		CALL	    TX_Serial
-		CALL		conStaMsg
+;		MOVLW	    0x0A		; Line feed
+;		CALL	    TX_Serial
 		CALL	    Wait_OK
 		
+		
 		; AT+CWJAP_CUR="dlink",""  connect to WIFI network
+		CALL		conWifiMsg
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -85,10 +87,10 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
-		CALL		conWifiMsg
 		CALL	    Wait_OK
 		
 		; AT+CPMUX=1 set to multiple connections
+		CALL		conMultMsg
 		CALL		newAtCom
 		MOVLW	    'C'
 		CALL	    TX_Serial
@@ -110,7 +112,6 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
-		CALL		conMultMsg
 		CALL        Wait_OK
 		
 		CALL		conDone
