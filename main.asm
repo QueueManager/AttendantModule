@@ -30,22 +30,11 @@ ticketChar1	 EQU	0x26
 ticketChar2	 EQU	0x27
 guicheNum	 EQU	0x28
 
-; Define command lengths = (num of chars) + 3 (0x0D 0x0A 0x00)
-;ATCOM	 UDATA	0x24
-;command	 RES	D'1'		; command "AT+RST"
-;ATCom02	 RES	D'14'		; command "AT+CIPMUX=1"
-;ATCom03	 RES	D'34'		; command "AT+CWJAP="IC","icomputacaoufal""
 
 #define	rs	ctrlPort, 0	; R/S (Data/Command)
 #define	en	ctrlPort, 1	; Enable
 #define	btn1 	ctrlPort, 4 ; Button 1
 #define btn2 	ctrlPort, 5 ; Button 2
-
-
-;lcdPrt	 UDATA	0x05	
-;ctrlPort RES	1	; PORTA=0x05. rs=RA0, en=RA1
-;dataPort RES	1	; PORTC=0x06
-;	 GLOBAL i, j, hi, lo, dataPort, ctrlPort
       
 ;====================================================================
 ; RESET and INTERRUPT VECTORS
@@ -100,25 +89,31 @@ setup:
       MOVWF   	OSCCON  ; set for 8-MHz internal clock 
       BANKSEL 	ctrlPort
       
-      ; Configuring USART
-      
-      MOVLW   d'12'           ;9600 baud
+; Configuring USART  
+      MOVLW   d'103'           ;9600 baud
       MOVWF   SPBRG
-      BCF     PIR1,  RCIF     ;clear RX interrupt
+      BSF     PIR1,  RCIF     ;set RX ok interrupt
       BSF     RCSTA, SPEN     ;serial port enable
       BSF     RCSTA, CREN     ;continuous RX enable
       BCF     TXSTA, SYNC     ;asynchronous mode
       BSF     TXSTA, TXEN     ;enable transmitter
       
-     CALL	connectWifi	
-     CALL	helloMessage      
+      
    
     MOVLW	'Z' ; Init ticketChar0 as Z
     MOVWF	ticketChar0
     MOVLW	'5' ; Init guiche number
     MOVWF	guicheNum
-	  
-      GOTO	loop
+    
+    CALL	delay
+    CALL	delay
+    CALL	delay
+    CALL	delay
+    	
+    CALL	connectWifi
+    CALL	helloMessage     
+    
+    GOTO	loop
          
 ;====================================================================
 ; MAIN LOOP

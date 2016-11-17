@@ -10,6 +10,19 @@ newAtCom:
 		CALL	    TX_Serial		
 		RETURN
 
+;==========================================
+; Reseting ESP
+;==========================================
+resetConfig:
+	    CALL	newAtCom
+	    MOVLW	    'R'
+	    CALL	    TX_Serial
+	    MOVLW	    'S'
+	    CALL	    TX_Serial
+	    MOVLW	    'T'
+	    CALL	    TX_Serial		
+	    RETURN
+		
 ; ======================================	
 ; Connect to WIFI current network
 ; ======================================			
@@ -35,8 +48,8 @@ connectWifi:
 		CALL	    TX_Serial
 		MOVLW	    0x0D		; Carriage Return
 		CALL	    TX_Serial
-;		MOVLW	    0x0A		; Line feed
-;		CALL	    TX_Serial
+		MOVLW	    0x0A		; Line feed
+		CALL	    TX_Serial
 		CALL	    Wait_OK
 		
 		
@@ -88,6 +101,7 @@ connectWifi:
 		MOVLW	    0x0A		; Line feed
 		CALL	    TX_Serial
 		CALL	    Wait_OK
+		
 		
 		; AT+CPMUX=1 set to multiple connections
 		CALL		conMultMsg

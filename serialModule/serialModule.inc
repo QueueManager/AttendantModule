@@ -3,18 +3,16 @@
 ; http://www.instructables.com/id/Fun-With-PIC-Assembly-Episode-18/step5/Software/
 ; ========================================
 ; Wait for a received byte
-RX_Serial:  BTFSC   RCSTA, OERR		;Overun
-            CALL    Overflow
-			MOVFW   RCREG           ;read RX buffer (clears interrupt)
-			;======================== Testing if receives
-			;writeDataW
-			;MOVFW	RCREG
-			;======================== End of test
-			
-            RETURN
+RX_Serial:  BTFSC   RCSTA, OERR		; Overun. If any error occur, CLEAR and SET CREN.
+	    CALL    Overflow
+	    BTFSS   PIR1,  RCIF     ; RX interrupt (Set when the last bit was already received)
+	    GOTO    RX_Serial
+	    MOVFW   RCREG
+	    RETURN
 
 ; Transmit a byte via serial			
-TX_Serial:  BTFSS   PIR1,  TXIF     ;TX interrupt: 1 = TXREG is empty
+TX_Serial:  ;BTFSS   PIR1,  TXIF    ;TX interrupt (set when free to send data)
+	    BTFSS   TXSTA,  TRMT    ;Edited. Stop bit was already sent.
             GOTO    TX_Serial       ;not empty
             MOVWF   TXREG           ;ok to transmit
             RETURN
@@ -23,26 +21,21 @@ TX_Serial:  BTFSS   PIR1,  TXIF     ;TX interrupt: 1 = TXREG is empty
 Overflow:   BCF     RCSTA, CREN     ;clear overflow by disabling receiver
             BSF     RCSTA, CREN     ;re-enable receiver
             RETURN
-			
-;==========================================
-; Wait for a serial data and send to LCD
-;==========================================
-readSerial: 
-			CALL	RX_Serial
-			writeDataW
-			;writeCmd	H'14'
-			RETURN
-			
+						
 ; =========================================
 ; Wait for and OK from the AT connection
 ; =========================================
-Wait_OK: 
+Wait_OK:
 			CALL    RX_Serial
             SUBLW   'O'
             BTFSS   STATUS, Z
             GOTO    Wait_OK
             CALL    RX_Serial
             SUBLW   'K'
+            BTFSS   STATUS, Z
+            GOTO    Wait_OK
+			CALL    RX_Serial
+            SUBLW   0x0D
             BTFSS   STATUS, Z
             GOTO    Wait_OK
             RETURN
@@ -88,17 +81,42 @@ Wait_IPD:
             BTFSS   STATUS, Z
             GOTO    Wait_IPD
 	
-			CALL	RX_Serial	; Guichê		
-			CALL	RX_Serial	; TicketType
-			MOVWF	ticketType
-			CALL	RX_Serial	; TicketChar2
-			MOVWF	ticketChar2
-			CALL	RX_Serial	; TicketChar1
-			MOVWF	ticketChar1
-			CALL	RX_Serial	; TicketChar0
-			MOVWF	ticketChar0
-			CALL	ticketMsg
-			
+	    CALL	RX_Serial	; Guichê		
+	    CALL	RX_Serial	; TicketType
+	    MOVWF	ticketType
+	    CALL	RX_Serial	; TicketChar2
+	    MOVWF	ticketChar2
+	    CALL	RX_Serial	; TicketChar1
+	    MOVWF	ticketChar1
+	    CALL	RX_Serial	; TicketChar0
+	    MOVWF	ticketChar0
+	    CALL	ticketMsg		
+            RETURN
+	    
+Wait_ESP    CALL    RX_Serial
+            SUBLW   'G' 
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'O'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'T'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   ' '
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'I'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
+            CALL    RX_Serial
+            SUBLW   'P'
+            BTFSS   STATUS, Z
+            GOTO    Wait_ESP
             RETURN
 
 ;==========================================

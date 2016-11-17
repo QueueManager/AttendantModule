@@ -6,10 +6,23 @@ intExecute:
 	GOTO	btn1Action
 	BTFSS	btn2
 	GOTO	btn2Action
+;	BTFSC	PIR1, RCIF
+;	GOTO	rxData
+
 intEnd:
-    BCF		INTCON, RAIF
+	BCF		PIR1, RCIF
+	BCF		INTCON, RAIF
 	RETURN
 
+; ========================================
+; When a new byte is read from RX
+; ========================================
+rxData:
+;    MOVFW   RCREG
+;    MOVWF   lastCharRX
+;    INCF    lcdCursor
+;    goto intEnd
+	
 ; ========================================
 ; Button 1 pressed routine.
 ; ========================================
@@ -30,7 +43,7 @@ btn2Action:
 	MOVFW	ticketChar0
 	SUBLW	'Z'
 	BTFSC   STATUS, Z
-    GOTO	intEnd
+	GOTO	intEnd
 	CALL	informTicket
 	CALL	ticketMsg
 	GOTO 	intEnd
